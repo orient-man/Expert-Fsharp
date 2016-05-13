@@ -30,3 +30,15 @@ let html =
     |> String.concat "\n"
 
 startWebServer defaultConfig (Successful.OK html)
+
+// mutually recursive functions
+let rec even n = (n = 0u) || odd(n - 1u)
+and odd n = (n <> 0u) && even(n - 1u)
+
+// mutable records
+type EventCounter = { mutable Total: int; Name: string }
+let ec = { Total = 0; Name = "name" }
+ec.Total <- ec.Total + 1
+
+let mutable cell = 1
+cell <- 2
