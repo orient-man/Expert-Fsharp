@@ -85,3 +85,53 @@ hash (100, "abc")
 // F# 4: disable generic hashing & comparison
 //open NonStructuralComparison
 //compare (1,3) (5,4) // fails!
+
+// boxing
+let x' = 5
+let objx = box x'
+let y' : int = unbox objx
+let y'' = objx :?> int
+let z' : string = unbox objx // InvalidCastException
+let z'' = objx :?> string   // InvalidCastException
+
+// making things generic
+// defaults to int!
+let rec intHcf a b = if a = 0 then b elif a < b then intHcf a (b - a) else intHcf (a - b) b
+
+let hcfGeneric1 (zero, sub, lessThan) =
+    let rec hcf a b =
+        if a = zero then b
+        elif lessThan a b then hcf a (sub b a)
+        else hcf (sub a b) b
+    hcf
+
+// Generic Algorithms through Function Parameters
+type INumeric<'T> =
+    abstract Zero : 'T
+    abstract Subtract : 'T * 'T -> 'T
+    abstract LessThan : 'T * 'T -> bool
+
+let hcfGeneric2 (ops : INumeric<'T>) =
+    let rec hcf a b =
+        if a = ops.Zero then b
+        elif ops.LessThan(a, b) then hcf a (ops.Subtract(b, a))
+        else hcf (ops.Subtract(a, b)) b
+    hcf
+
+let intOps =
+    { new INumeric<int> with
+        member ops.Zero = 0
+        member ops.Subtract(x, y) = x - y
+        member ops.LessThan(x, y) = x < y }
+
+let intHcf2 = hcfGeneric2 intOps
+
+// final: inlining + function parameters
+let inline hcf a b =
+    let op = { new INumeric<'T> with
+        member ops.Zero = LanguagePrimitives.GenericZero<'T>
+        member ops.Subtract(x, y) = x - y
+        member ops.LessThan(x, y) = x < y }
+    hcfGeneric2 op a b
+
+// page: 134/599
