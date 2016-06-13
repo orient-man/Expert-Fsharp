@@ -134,4 +134,12 @@ let inline hcf a b =
         member ops.LessThan(x, y) = x < y }
     hcfGeneric2 op a b
 
-// page: 134/599
+// how to make fun. generic
+// let mapFirst = List.map fst  // error!
+let mapFirst inp = List.map fst inp
+
+// create members or not?
+// 1) for intrinsic, essential properties/operation only
+// 2) for extension methods
+
+// page: 148/599
