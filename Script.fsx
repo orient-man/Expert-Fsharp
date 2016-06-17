@@ -142,4 +142,39 @@ let mapFirst inp = List.map fst inp
 // 1) for intrinsic, essential properties/operation only
 // 2) for extension methods
 
-// page: 148/599
+// do (constructor body), indexer
+open System.Collections.Generic
+
+type SparseVector(items: seq<int * float>) =
+    let elems = new SortedDictionary<_, _>()
+    do items |> Seq.iter (fun (k, v) -> elems.Add(k, v))
+
+    member t.Item with get(idx) = if elems.ContainsKey(idx) then elems.[idx] else 0.0
+
+let svec = SparseVector [(3, 547.0)]
+svec.[4]
+svec.[3]
+
+// extensions
+// F# style
+type System.Int32 with
+    member i.IsEven = i % 2 = 0
+    member i.IsOdd = not i.IsEven
+
+(5).IsEven
+(5).IsOdd
+// C# style
+open System.Runtime.CompilerServices
+
+[<Extension>]
+type Int32Extensions() =
+    [<Extension>]
+    static member IsEven2(i: int) = i % 2 = 0
+
+    [<Extension>]
+    static member IsOdd2(i: int) = i % 2 <> 0
+
+(5).IsEven2()
+(5).IsOdd2()
+
+// page: 178/599
