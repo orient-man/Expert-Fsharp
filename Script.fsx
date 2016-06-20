@@ -177,4 +177,15 @@ type Int32Extensions() =
 (5).IsEven2()
 (5).IsOdd2()
 
-// page: 178/599
+// modules & types hints
+// * use modules to organize code
+// * concrete types for data structures (dot-notation for essential properties/operations)
+// * interfaces if several implementations is possible
+// * implement interfaces with private concrete types or object expressions
+// * avoid inheritance
+// * avoid nesting modules or types
+
+// enums
+type ColorEnum = Black = 0 | White = 1
+
+// page: 183/599
